@@ -33,22 +33,29 @@ class Sudoku:
     
     # def solve(self, board: list[list[str]] ) -> None:
     def solve(self) -> None:
-        self.is_valid_state(self.board)
+        while not self.is_valid_state():
+            
+            break
         
-    def is_valid_state(self, board):
+    def is_valid_state(self):
         for row in range(9): # Check if all rows are all 1-9            
-            if not set(self.board[row]) == self.DIGITS: # DIGITS is a set
+            if not self.get_rows() == self.DIGITS: # DIGITS is a set
+                # print("Falase at Row: ", row)
                 return False
             
         for col in self.get_cols():
             if not set(col) == self.DIGITS:
+                # print("Falase at Col: ", col)
                 return False
             
         for grid in self.get_sub_grids():
             if not set(grid) == self.DIGITS:
+                # print("Falase at Grid: ", grid)
                 return False
         
         return True
+    def get_rows(self):
+        return self.board
     
     def get_cols(self):
         all_cols = []
@@ -62,30 +69,32 @@ class Sudoku:
     
     def get_sub_grids(self):
         all_grids = []
-        # for i in range(9):
-        #     all_grids.append(list())
 
         for row in range(0, 9, 3):
             for col in range(0, 9, 3):
                 sub_grid = []
                 for iterator in range(3):
                     sub_grid.extend(self.board[row + iterator][col:col + 3]) # add lists into sub_grid as elements instead of lists
-                    
-                all_grids.append(sub_grid)
 
-        # for i in range(len(all_grids)):
-        #     print(all_grids[i])
+                all_grids.append(sub_grid)
 
         return all_grids
     
-    def get_row_used_digits(self, row):
+    def get_grid_position(self, row, col):
+        grid = int()
+        multiplier = 0
+        if (row >= 3):
+            multiplier = 1
+        if (row >= 6):
+            multiplier = 2
+        return 3 * multiplier + int(col/3)
+    
+    def get_available_digit(self, row, col):
         used_digits = set()
         used_digits.update(self.board[row])
+        used_digits.update(self.get_cols(col))
         
-        
-    
-    # def get_available_digit(self, board, row, col, get_grid_at_pos(row, col) ):
-    #     pass
+        available_digits = set([str(num) for num in range(1, 10)])
     
 
 s_grid = list(int(n) for n in range(9))
@@ -99,7 +108,7 @@ sample_1 = [
     ['.', '1', '9', '.', '.', '.', '.', '2', '.'],
     ['.', '2', '.', '1', '.', '3', '8', '.', '5'],
     ['1', '7', '8', '.', '3', '.', '6', '2', '.'],
-    ['6', '5', '2', '.', '.', '1', '.', '.', '4'],
+    ['6', '5', '2', '.', '.', '1', '.', '.','4'],
     ['9', '4', '3', '2', '7', '.', '.', '.', '.'],
     ['2', '3', '1', '7', '4', '9', '5', '8', '6'],
     ['8', '.', '.', '.', '1', '.', '4', '.', '.'],
@@ -111,5 +120,10 @@ sudoku_board = Sudoku(sample_1)
 sudoku_board.print_board()
 sudoku_board.solve()
 
-# for i in sample_1:
-#     print(set(i) == sudoku_board.DIGITS)
+
+
+available_digits = set([str(num) for num in range(1, 10)])
+used_digits = {'3', '5', '7', '9'}
+# used_digits = set([str[num] for num in used_digits])
+
+print(available_digits.difference(used_digits))
